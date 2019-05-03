@@ -1,6 +1,6 @@
 <?php try
 {
-	$db = new PDO('mysql:host=cl1-sql20;dbname=img76751;charset=utf8', 'img76751', 'Oitreza13');
+	$db = new PDO('mysql:host=cl1-sql20;dbname=img76751;charset=utf8', 'img76751', 'psswrd');
 }
 catch (Exception $e)
 {

@@ -32,5 +32,33 @@ class BasicPartie
       public function setId_carte_flop3($id_carte_flop3){return $this->id_carte_flop3=$id_carte_flop3;}
       public function setId_carte_turn($id_carte_turn){return $this->id_carte_turn=$id_carte_turn;}
       public function setId_carte_river($id_carte_river){return $this->id_carte_river=$id_carte_river;}
+
+			public function nouvellePhase($phase,$pot){
+				if($phase==2){
+					// $carte=fonction d'Axel -- fonction de tirage d'une carte aléatoire sans doublon
+					$this->setId_carte_flop1($carte);
+					// $carte=fonction d'Axel -- fonction de tirage d'une carte aléatoire sans doublon
+					$this->setId_carte_flop2($carte);
+					// $carte=fonction d'Axel -- fonction de tirage d'une carte aléatoire sans doublon
+					$this->setId_carte_flop3($carte);
+				}
+
+				if($phase==3){
+					// $carte=fonction d'Axel -- fonction de tirage d'une carte aléatoire sans doublon
+					$this->setId_carte_turn($carte);
+
+				}
+
+				if($phase==4){
+					// $carte=fonction d'Axel -- fonction de tirage d'une carte aléatoire sans doublon
+					$this->setId_carte_river($carte);
+
+				}
+				if($phase==5){
+					// comparaison de la valeur des mains de chaque joueur au statut > 0
+					// le vainqueur récupère le pot
+					// exception si son tapis est insuffisant
+				}
+			}
     };
 ?>

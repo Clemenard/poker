@@ -60,10 +60,51 @@ if($i==2){$donne->setMise(10);}
 else if(($nbJoueur==2 && $i==1) || $i==3 ){$donne->setMise(20);}
 
  if(($nbJoueur==2 && $i==2) || ($nbJoueur==3 && $i==1) || ($nbJoueur>3 && $i==4)){
-	 $donne->setJoueurActif(true);
+	 $donne->setJoueur_actif(true);
  }
 }
 return 'La partie est bien lancée';
 }
+}
+
+// Passer sa main
+if(isset($_POST['passerSaMain'])  ){
+	$partie=$gerp->getP($_POST['passerSaMain']);
+	$donne=$gerd->getMyD($_POST['passerSaMain'],$_SESSION['idUtilisateur']);
+
+
+	if($donne->joueur_actif()==false){
+		return "Ce n'est pas à votre tour de jouer";
+	}
+	else{
+		$donnes=$gerd->getAllDInPartie($_POST['passerSaMain']);
+		$donne->setStatut(0);
+		$gerd->updateD($donne);
+		$nouvellePhase=$gerd->verifStatut($_POST['passerSaMain']);
+		if($nouvellePhase==false){
+
+					$donne->changerJoueurActif($donnes);}
+
+		else{
+			$partie->setPhase($partie->phase()+1);
+			$pot=$partie->pot();
+			foreach ($donnes as $donne) {
+			$pot+=$donne->mise();
+			$donne->setStatut(1)
+			}
+			$partie->setPot($pot);
+			$partie->nouvellePhase($partie->phase());
+			// changement de joueur actif, code à rajouter
+
+		}
+	}
+}
+
+// suivre la mise
+if(isset($_POST['suivreLaMise'])  ){
+	$partie=$gerp->getP($_POST['suivreLaMise']);
+	$donne=$gerd->getMyD($_POST['suivreLaMise'],$_SESSION['idUtilisateur']);
+	$donnes=$gerd->getAllDInPartie($_POST['suivreLaMise']);
+	
 }
 ?>

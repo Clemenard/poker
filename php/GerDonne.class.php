@@ -4,10 +4,11 @@
 
 public function __construct($db){$this->setDb($db);}
 
-public function addP($id_host)
+public function addD($id_partie, $id_utilisateur)
 {
-  $q = $this->db->prepare('INSERT INTO donnes(id_host) VALUES(:id_host)  ');
-$q->bindValue(':id_host', $perso->id_host());
+  $q = $this->db->prepare('INSERT INTO donnes(id_partie,id_utilisateur) VALUES(:id_partie,:id_utilisateur)  ');
+$q->bindValue(':id_partie', $perso->id_partie(),
+':id_utilisateur', $perso->id_utilisateur());
   $q->execute();
 
 }

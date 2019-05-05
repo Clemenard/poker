@@ -29,7 +29,7 @@ public function deleteP( $id)
     $this->db->exec('DELETE FROM parties WHERE id_partie = '.$id);
   }
 
-  public function updateP(BasicUtilisateur $perso)
+  public function updateP(BasicPartie $perso)
 {
  $q = $this->db->prepare('UPDATE parties
     SET phase=:phase,pot=:pot,id_carte_flop1=:id_carte_flop1,id_carte_flop2=:id_carte_flop2,

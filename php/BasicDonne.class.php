@@ -1,8 +1,8 @@
 <?php
 class BasicDonne
 {
-  protected $id_utilisateur;
-  protected $id_partie;
+  protected $id_utilisateurs;
+  protected $id_parties;
   protected $id_carte1;
   protected $id_carte2;
   protected $mise;
@@ -17,8 +17,8 @@ class BasicDonne
       // public function hydrate(array $donnees){
       //     foreach ($donnees as $key => $value){$method = 'set'.ucfirst($key); if (method_exists($this, $method)){$this->$method($value);}}}
 
-      public function id_utilisateur(){return $this->id_utilisateur;}
-     	public function id_partie(){return $this->id_partie;}
+      public function id_utilisateurs(){return $this->id_utilisateurs;}
+     	public function id_parties(){return $this->id_parties;}
       public function pot(){return $this->pot;}
       public function id_carte1(){return $this->id_carte1;}
       public function id_carte2(){return $this->id_carte2;}

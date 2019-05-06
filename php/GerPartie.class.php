@@ -18,9 +18,9 @@ $q->execute();
 public function getAllPStarted(){
   $q = $this->db->prepare('SELECT * FROM parties WHERE phase > :phase');
   $q->setFetchMode(PDO::FETCH_CLASS, 'BasicPartie');
-  $q->execute(array(':phase' => 0));
-    while ( $q->fetch(PDO::FETCH_ASSOC)){$persos[] = $q->fetch();}
-return $persos;}
+  $q->bindValue(':phase',0);
+  $q->execute();
+return $q->fetchAll();}
 
 
 public function getAllPUnstarted(){
@@ -28,25 +28,24 @@ public function getAllPUnstarted(){
   $q->setFetchMode(PDO::FETCH_CLASS, 'BasicPartie');
   $q->bindValue(':phase',0);
   $q->execute();
-    while ( $q->fetch(PDO::FETCH_ASSOC)){$persos[] = $q->fetch();}
-return $persos;}
+return $q->fetchAll();}
 
-public function getP($id){	$persos=new BasicPartie(array());
-  $q = $this->db->prepare('SELECT * FROM parties WHERE id_partie = :id');
-  $q->execute(array(':id' => $id));
-    while ($donnees = $q->fetch(PDO::FETCH_ASSOC)){$persos = new BasicPartie($donnees);}
-return $persos;}
+public function getP($id){
+  $q = $this->db->prepare('SELECT * FROM parties WHERE id_parties = :id');
+  $q->setFetchMode(PDO::FETCH_CLASS, 'BasicPartie');
+  $q->bindValue(':id',$id);
+return $q->fetch();}
 
-public function getLastP(){	$persos=new BasicPartie(array());
-  $q = $this->db->prepare('SELECT * FROM parties  ORDER BY id_parties LIMIT 0,1 DESC');
+public function getLastP(){
+  $q = $this->db->prepare('SELECT * FROM parties  ORDER BY id_parties  DESC LIMIT 0,1');
+  $q->setFetchMode(PDO::FETCH_CLASS, 'BasicPartie');
   $q->execute();
-    while ($donnees = $q->fetch(PDO::FETCH_ASSOC)){$persos = new BasicPartie($donnees);}
-return $persos;}
+return $q->fetch();}
 
 
 public function deleteP( $id)
   {
-    $this->db->exec('DELETE FROM parties WHERE id_partie = '.$id);
+    $this->db->exec('DELETE FROM parties WHERE id_parties = '.$id);
   }
 
   public function updateP(BasicPartie $perso)
@@ -54,7 +53,7 @@ public function deleteP( $id)
  $q = $this->db->prepare('UPDATE parties
     SET phase=:phase,pot=:pot,id_carte_flop1=:id_carte_flop1,id_carte_flop2=:id_carte_flop2,
     id_carte_flop3=:id_carte_flop3,id_carte_turn=:id_carte_turn,id_carte_river=:id_carte_river,
-   WHERE id_partie=:id_partie');
+   WHERE id_parties=:id_parties');
 $q->bindValue(':phase', $perso->phase());
 $q->bindValue(':pot', $perso->pot());
 $q->bindValue(':id_carte_flop1', $perso->id_carte_flop1());
@@ -62,7 +61,7 @@ $q->bindValue(':id_carte_flop2', $perso->id_carte_flop2());
 $q->bindValue(':id_carte_flop3', $perso->id_carte_flop3());
 $q->bindValue(':id_carte_turn', $perso->id_carte_turn());
 $q->bindValue(':id_carte_river', $perso->id_carte_river());
-$q->bindValue(':id_partie', $perso->id_partie());
+$q->bindValue(':id_parties', $perso->id_parties());
  $q->execute();
 }
 

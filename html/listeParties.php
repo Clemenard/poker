@@ -10,8 +10,9 @@
 		</tr>
 	<?php $partiesEnAttente=$gerp->getAllPUnstarted();
 	foreach($partiesEnAttente as $partie){
-		 echo'<pre>';var_dump($partie);echo'</pre>';
+		  echo'<pre>';var_dump($partie);echo'</pre>';
 		$donnes=$gerd->getAllDInPartie($partie->id_parties());
+		echo'<pre>';var_dump($donnes);echo'</pre>';
 		$nbJoueur= count($donnes);
 echo"<tr><td>".$partie->id_parties()
 ."</td><td>".$nbJoueur
@@ -19,7 +20,7 @@ echo"<tr><td>".$partie->id_parties()
 .'</td><td><form action="../php/actions.php" method="post">';
 $participation=false;
 foreach($donnes as $donne){
-	if($donne->id_joueur() == $_SESSION['id_joueur']){
+	if($donne->id_utilisateurs() == $_SESSION['id_utilisateur']){
 		$participation=true;
 	}
 }

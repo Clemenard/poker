@@ -6,9 +6,9 @@ public function __construct($db){$this->setDb($db);}
 
 public function addD($id_partie, $id_utilisateur)
 {
-  $q = $this->db->prepare('INSERT INTO donnes(id_partie,id_utilisateur) VALUES(:id_partie,:id_utilisateur)  ');
-  $q->bindValue(':id_partie', $id_partie);
-  $q->bindValue(':id_utilisateur', $id_utilisateur);
+  $q = $this->db->prepare('INSERT INTO donnes(id_parties,id_utilisateurs) VALUES(:id_parties,:id_utilisateurs)  ');
+  $q->bindValue(':id_parties', $id_partie);
+  $q->bindValue(':id_utilisateurs', $id_utilisateur);
   $q->execute();
 
 }
@@ -22,12 +22,14 @@ public function getMyD($id_partie, $id_utilisateur){	$persos=new BasicDonne(arra
 while ($donnees = $q->fetch(PDO::FETCH_ASSOC)){$persos = new BasicDonne($donnees);}
 return $persos;}
 
-public function getAllDInPartie($partie){	$persos=new BasicDonne(array());
-  $q = $this->db->prepare('SELECT * FROM donnes WHERE id_partie = :partie');
-  $q->execute(array(':partie' => $partie));
-    while ($donnees = $q->fetch(PDO::FETCH_ASSOC)){$persos = new BasicDonne($donnees);}
-return $persos;}
 
+
+public function getAllDInPartie($partie){
+  $q = $this->db->prepare('SELECT * FROM donnes WHERE id_parties = :parties');
+  $q->setFetchMode(PDO::FETCH_CLASS, 'BasicDonne');
+  $q->bindValue(':parties',$partie);
+  $q->execute();
+return $q->fetchAll();}
 
 public function deleteP( $id)
   {

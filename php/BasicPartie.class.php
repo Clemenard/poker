@@ -1,7 +1,7 @@
 <?php
 class BasicPartie
 {
-  protected $id_partie;
+  protected $id_parties;
   protected $phase;
   protected $pot;
   protected $id_carte_flop1;
@@ -9,13 +9,14 @@ class BasicPartie
   protected $id_carte_flop3;
   protected $id_carte_turn;
   protected $id_carte_river;
+  protected $id_host;
 
-      public function __construct(array $donnees){$this->hydrate($donnees);}
+      public function __construct(){}
 
-      public function hydrate(array $donnees){
-          foreach ($donnees as $key => $value){$method = 'set'.ucfirst($key); if (method_exists($this, $method)){$this->$method($value);}}}
+      // public function hydrate(array $donnees){
+      //     foreach ($donnees as $key => $value){$method = 'set'.ucfirst($key); if (method_exists($this, $method)){$this->$method($value);}}}
 
-      public function id_partie(){return $this->id_partie;}
+      public function id_parties(){return $this->id_parties;}
      	public function phase(){return $this->phase;}
       public function pot(){return $this->pot;}
       public function id_carte_flop1(){return $this->id_carte_flop1;}
@@ -23,8 +24,8 @@ class BasicPartie
       public function id_carte_flop3(){return $this->id_carte_flop3;}
       public function id_carte_turn(){return $this->id_carte_turn;}
       public function id_carte_river(){return $this->id_carte_river;}
+      public function id_host(){return $this->id_host;}
 
-      public function setId_partie($id_partie){return $this->id_partie=$id_partie;}
       public function setPhase($phase){return $this->phase=$phase;}
       public function setPot($pot){return $this->pot=$pot;}
       public function setId_carte_flop1($id_carte_flop1){return $this->id_carte_flop1=$id_carte_flop1;}
@@ -32,6 +33,7 @@ class BasicPartie
       public function setId_carte_flop3($id_carte_flop3){return $this->id_carte_flop3=$id_carte_flop3;}
       public function setId_carte_turn($id_carte_turn){return $this->id_carte_turn=$id_carte_turn;}
       public function setId_carte_river($id_carte_river){return $this->id_carte_river=$id_carte_river;}
+      public function setId_host($id_host){return $this->id_host=$id_host;}
 
 			public function nouvellePhase($phase,$pot){
 				if($phase==2){

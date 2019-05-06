@@ -4,18 +4,31 @@
 
 public function __construct($db){$this->setDb($db);}
 
+
 public function addP($id_host)
 {
   $q = $this->db->prepare('INSERT INTO parties(id_host) VALUES(:id_host)  ');
-$q->bindValue(':id_host', $perso->id_host());
-  $q->execute();
+  $q->bindValue(':id_host', $id_host);
 
+$q->execute();
 }
 
-public function getAllPUnstarted(){	$persos=new BasicPartie(array());
-  $q = $this->db->prepare('SELECT * FROM parties WHERE statut = :statut');
-  $q->execute(array(':statut' => 1));
-    while ($donnees = $q->fetch(PDO::FETCH_ASSOC)){$persos = new BasicPartie($donnees);}
+
+
+public function getAllPStarted(){
+  $q = $this->db->prepare('SELECT * FROM parties WHERE phase > :phase');
+  $q->setFetchMode(PDO::FETCH_CLASS, 'BasicPartie');
+  $q->execute(array(':phase' => 0));
+    while ( $q->fetch(PDO::FETCH_ASSOC)){$persos[] = $q->fetch();}
+return $persos;}
+
+
+public function getAllPUnstarted(){
+  $q = $this->db->prepare('SELECT * FROM parties WHERE phase = :phase');
+  $q->setFetchMode(PDO::FETCH_CLASS, 'BasicPartie');
+  $q->bindValue(':phase',0);
+  $q->execute();
+    while ( $q->fetch(PDO::FETCH_ASSOC)){$persos[] = $q->fetch();}
 return $persos;}
 
 public function getP($id){	$persos=new BasicPartie(array());
@@ -23,6 +36,13 @@ public function getP($id){	$persos=new BasicPartie(array());
   $q->execute(array(':id' => $id));
     while ($donnees = $q->fetch(PDO::FETCH_ASSOC)){$persos = new BasicPartie($donnees);}
 return $persos;}
+
+public function getLastP(){	$persos=new BasicPartie(array());
+  $q = $this->db->prepare('SELECT * FROM parties  ORDER BY id_parties LIMIT 0,1 DESC');
+  $q->execute();
+    while ($donnees = $q->fetch(PDO::FETCH_ASSOC)){$persos = new BasicPartie($donnees);}
+return $persos;}
+
 
 public function deleteP( $id)
   {

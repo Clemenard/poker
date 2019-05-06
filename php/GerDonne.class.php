@@ -7,20 +7,27 @@ public function __construct($db){$this->setDb($db);}
 public function addD($id_partie, $id_utilisateur)
 {
   $q = $this->db->prepare('INSERT INTO donnes(id_partie,id_utilisateur) VALUES(:id_partie,:id_utilisateur)  ');
-$q->bindValue(':id_partie', $perso->id_partie(),
-':id_utilisateur', $perso->id_utilisateur());
+  $q->bindValue(':id_partie', $id_partie);
+  $q->bindValue(':id_utilisateur', $id_utilisateur);
   $q->execute();
 
 }
 
-public function getMyD($id_partie, $id_utilisateur){	$persos=new BasicPartie(array());
+public function getMyD($id_partie, $id_utilisateur){	$persos=new BasicDonne(array());
   $q = $this->db->prepare('SELECT * FROM donnes WHERE id_partie = :id_partie AND id_utilisateur = :id_utilisateur ');
   $q->execute(array(
     ':id_utilisateur' => $id_utilisateur,
-    ':id_partie' => $id_partie,
+    ':id_partie' => $id_partie
 ));
-    while ($donnees = $q->fetch(PDO::FETCH_ASSOC)){$persos = new BasicPartie($donnees);}
+while ($donnees = $q->fetch(PDO::FETCH_ASSOC)){$persos = new BasicDonne($donnees);}
 return $persos;}
+
+public function getAllDInPartie($partie){	$persos=new BasicDonne(array());
+  $q = $this->db->prepare('SELECT * FROM donnes WHERE id_partie = :partie');
+  $q->execute(array(':partie' => $partie));
+    while ($donnees = $q->fetch(PDO::FETCH_ASSOC)){$persos = new BasicDonne($donnees);}
+return $persos;}
+
 
 public function deleteP( $id)
   {

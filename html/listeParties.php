@@ -1,5 +1,5 @@
 
-<form action="actions.php" method="post">
+<form action="../php/actions.php" method="post">
 	<input type="submit" name="nouveauJeu" value="Créer une nouvelle partie"></form>
 	<h1>Liste des parties en attente</h1>
 	<table>
@@ -8,14 +8,15 @@
 			<th>Nombre d'inscrits</th>
 			<th>Hôte de la partie</th>
 		</tr>
-	<?php $partiesEnAttente=$gerp->getAllPhase0P();
+	<?php $partiesEnAttente=$gerp->getAllPUnstarted();
 	foreach($partiesEnAttente as $partie){
-		$donnes=$gerd->getAllDInPartie($partie->id_partie());
+		 echo'<pre>';var_dump($partie);echo'</pre>';
+		$donnes=$gerd->getAllDInPartie($partie->id_parties());
 		$nbJoueur= count($donnes);
-echo"<tr><td>".$partie->id_partie()
+echo"<tr><td>".$partie->id_parties()
 ."</td><td>".$nbJoueur
 ."</td><td>".$partie->id_host()
-.'</td><td><form action="actions.php" method="post">';
+.'</td><td><form action="../php/actions.php" method="post">';
 $participation=false;
 foreach($donnes as $donne){
 	if($donne->id_joueur() == $_SESSION['id_joueur']){
@@ -23,13 +24,13 @@ foreach($donnes as $donne){
 	}
 }
 if($participation==true){
-	echo '<button type="submit" name="desinscriptionPartie" value="'.$partie->id_partie()
+	echo '<button type="submit" name="desinscriptionPartie" value="'.$partie->id_parties()
 	.'">Se désinscrire</button</form>';
 }
 else{
-.'<button type="submit" name="inscriptionPartie" value="'.$partie->id_partie()
+echo '<button type="submit" name="inscriptionPartie" value="'.$partie->id_parties()
 .'">S\'inscrire</button</form>';}
-."</td></tr>";
+echo "</td></tr>";
 	}?>
 </table>
 
@@ -41,12 +42,12 @@ else{
 			<th>Phase de jeu</th>
 			<th>Joueur actif</th>
 		</tr>
-	<?php $partiesEnCours=$gerp->getAllEnCoursP();
+	<?php $partiesEnCours=$gerp->getAllPStarted();
 	foreach($partiesEnCours as $partie){
-		$donnes=$gerd->getAllDInPartie($partie->id_partie());
+		$donnes=$gerd->getAllDInPartie($partie->id_parties());
 		$joueurActif=$geru->getNameU($gerd->getIdActif());
 		$nbJoueur= count($donnes);
-echo"<tr><td>".$partie->id_partie()
+echo"<tr><td>".$partie->id_parties()
 ."</td><td>".$nbJoueur
 ."</td><td>".$partie->phase()
 ."</td><td>".$joueurActif;

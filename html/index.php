@@ -1,5 +1,5 @@
 
-<?php include 'sgbd_loader.php'; ?>
+<?php include '../php/sgbdLoader.php'; ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>

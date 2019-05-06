@@ -4,27 +4,33 @@
 
 public function __construct($db){$this->setDb($db);}
 
-public function addU(BasicUtilisateur $perso)
+public function addU($pseudo, $password)
 {
-  $q = $this->db->prepare('INSERT INTO utilisateurs(pseudo,password,derniere_connexion) VALUES(:pseudo,:password,NOW())  ');
-$q->bindValue(':pseudo', $perso->pseudo());
-$q->bindValue(':password', $perso->password());
-
+  $q = $this->db->prepare('INSERT INTO utilisateurs(pseudo,password) VALUES(:pseudo,:password)  ');
+$q->bindValue(':pseudo', $pseudo);
+$q->bindValue(':password', $password);
   $q->execute();
-
 }
 
-public function getUByPseudo($nom){	$persos=new BasicUtilisateur(array());
-  $q = $this->db->prepare('SELECT * FROM utilisateurs WHERE nom = :nom');
-  $q->execute(array(':nom' => $nom));
-    while ($donnees = $q->fetch(PDO::FETCH_ASSOC)){$persos = new BasicUtilisateur($donnees);}
+
+public function countU($nom){
+$persos= $this->db->exec('COUNT(*) FROM utilisateurs WHERE pseudo = '.$nom);
 return $persos;}
 
-public function getUById($id){	$persos=new BasicUtilisateur(array());
-  $q = $this->db->prepare('SELECT * FROM utilisateurs WHERE id_utilisateur = :id');
-  $q->execute(array(':id' => $id));
-    while ($donnees = $q->fetch(PDO::FETCH_ASSOC)){$persos = new BasicUtilisateur($donnees);}
-return $persos;}
+public function getUByPseudo($nom){
+  $q = $this->db->prepare('SELECT * FROM utilisateurs WHERE pseudo = :pseudo');
+  $q->setFetchMode(PDO::FETCH_CLASS, 'BasicUtilisateur');
+  $q->execute(array(':pseudo' => $nom));
+  $donnees = $q->fetch();
+return $donnees;}
+
+
+public function getUById($nom){
+  $q = $this->db->prepare('SELECT * FROM utilisateurs WHERE id_utilisateurs = :id');
+  $q->setFetchMode(PDO::FETCH_CLASS, 'BasicUtilisateur');
+  $q->execute(array(':id' => $nom));
+  $donnees = $q->fetch();
+return $donnees;}
 
 public function deleteU( $nom)
   {

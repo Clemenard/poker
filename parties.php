@@ -77,7 +77,7 @@ echo "</td></tr>";
 		$joueurActif=$resultat->fetch();
 
 		$nbJoueur= count($donnes);
-echo'<tr><td><a href="index.php?page=partie&id='.$partie['id_partie'].'">'.$partie['id_partie']
+echo'<tr><td><a href="partie.php?id='.$partie['id_partie'].'">'.$partie['id_partie']
 ."</a></td><td>".$nbJoueur
 ."</td><td>".$partie['phase']
 ."</td><td>".$joueurActif['pseudo'];

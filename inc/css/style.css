@@ -16,3 +16,9 @@ main{
   padding:10px;
   cursor:pointer;
   }
+
+  .vert{background-color: green;}
+  .gris{background-color: grey;}
+  .carte{
+    width: 100px;
+  height: 100%;}

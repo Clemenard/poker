@@ -61,43 +61,54 @@ return $number;
 }
 
 function findepartie($partie){
-  $resultat=execRequete('SELECT * FROM donnes WHERE id_partie = :id AND statut>0',array("id"=>$_GET['id']));
-  $donnes=$resultat->fetch();
+
+  $resultat=execRequete('SELECT * FROM donnes WHERE id_partie = :id AND statut>0',array("id"=>intval($_GET['id'])));
+  $donnes=$resultat->fetchAll();
+  $best=[];
   foreach($donnes as $d){
+    $hasFlush=false;$hasCarre=false;$hasFull=false;$hasCouleur=false;$hasSuite=false;$hasBrelan=false;$hasDoublePaire=false;$hasPaire=false;
     $annonce=[];
-    $annonce[]=$d['carte1'];
-    $annonce[]=$d['carte2'];
-    $annonce[]=$partie['carte_flop1'];
-    $annonce[]=$partie['carte_flop2'];
-    $annonce[]=$partie['carte_flop3'];
-    $annonce[]=$d['carte_turn'];
-    $annonce[]=$d['carte_river'];
-    $annonce_bis=[];
-    foreach($annonce as $a=>$key){
-    $resultat=execRequete('SELECT * FROM cartes WHERE id_carte = :id ',array("id"=>$a));
+    $annonce[]=$d['id_carte1'];
+    $annonce[]=$d['id_carte2'];
+    $annonce[]=$partie['id_carte_flop1'];
+    $annonce[]=$partie['id_carte_flop2'];
+    $annonce[]=$partie['id_carte_flop3'];
+    $annonce[]=$partie['id_carte_turn'];
+    $annonce[]=$partie['id_carte_river'];
+    $a_bis=[];
+    $figures=[];$couleurs=[];
+    foreach($annonce as $key=>$value){
+    $resultat=execRequete('SELECT * FROM cartes WHERE id_carte = :id ',array("id"=>intval($value)));
     $a_bis[$key]=$resultat->fetch();
+// echo'<pre>';
+// var_dump($a_bis[$key]);
+// echo'</pre>';
 
-  $figures=[];$couleurs=[];
-
-if (array_key_exists($a_bis[$key]['couleur'],$couleurs)){
-  $couleurs[$f]++;
+if (array_key_exists($a_bis[$key]['couleur'],$couleurs)) {
+  $couleurs[$a_bis[$key]['couleur']]+=1;
 }
-else{$couleurs[$f]=1;}
+else{$couleurs[$a_bis[$key]['couleur']]=1;}
 
 
 
 if (array_key_exists($a_bis[$key]['figure'],$figures)){
-  $figures[$f]++;
+  $figures[$a_bis[$key]['figure']]+=1;
 }
-else{$figures[$f]=1;}
+else{$figures[$a_bis[$key]['figure']]=1;}
 }
-
-if($couleurs[1]>4 || $couleurs[2]>4 || $couleurs[3]>4 || $couleurs[4]>4){
+// echo'<pre>';
+// var_dump($couleurs);
+// echo'</pre>';
+// echo'<pre>';
+// var_dump($figures);
+// echo'</pre>';
+if(max($couleurs)>4){
   $hasCouleur=true;
 }
 $suite=0;$suiteMax=0;$clef=0;asort($figures);
 
 foreach($figures as $key=>$value){
+  // echo $key.'=>'.$value."  ";
   if($value==4){$hasCarre=true;}
   else if($value==3){$hasBrelan=true;}
   else if($value==2 && $hasPaire=true){$hasDoublePaire=true;}
@@ -118,16 +129,19 @@ if($suite>4){
 if($hasSuite==true && $hasCouleur==true){$hasFlush==true;}
 if($hasPaire==true && $hasBrelan==true){$hasFull==true;}
 if($hasFlush==true){$d['score']=7;}
-if($hasCarre==true){$d['score']=6;}
-if($hasFull==true){$d['score']=5;}
-if($hasCouleur==true){$d['score']=4;}
-if($hasBrelan==true){$d['score']=3;}
-if($hasDoublePaire==true){$d['score']=2;}
-if($hasPaire==true){$d['score']=1;}
+else if($hasCarre==true){$d['score']=6;}
+else if($hasCouleur==true){$d['score']=4;}
+else if($hasBrelan==true){$d['score']=3;}
+else if($hasDoublePaire==true){$d['score']=2;}
+else if($hasPaire==true){$d['score']=1;}
 else{$d['score']=0;}
+execRequete('UPDATE   donnes SET score =:score WHERE id_utilisateur = :id_u 	AND id_partie = :id_p',
+array(':score'=>$d['score'],':id_u'=>$d['id_utilisateur'],':id_p'=>$d['id_partie']));
+
 }
-$best['score']=0;
+$best['score']=-1;$bestPrime=[];
 foreach($donnes as $d){
+ // var_dump($d);
   if($d['score']>$best['score']){
   $best=$d;
   $bestPrime=[];}
@@ -137,8 +151,52 @@ else if($d['score']==$best['score']){
 }
 }
 if(empty($bestPrime)){
+$best['statut']=4;
+execRequete('UPDATE   donnes SET statut =:statut WHERE id_utilisateur = :id_u 	AND id_partie = :id_p',
+array(':statut'=>$best['statut'],':id_u'=>$best['id_utilisateur'],':id_p'=>$best['id_partie']));
+$resultat = execRequete("SELECT * FROM utilisateurs WHERE id_utilisateur=:id ",
+array('id' => $best['id_utilisateur']));
+$gagnant=$resultat->fetch();
 
+$gagnant['jetons']=intval($gagnant['jetons'])+$partie['pot'];
+execRequete('UPDATE   utilisateurs SET jetons =:jetons WHERE id_utilisateur = :id_u',
+array(':jetons'=>$gagnant['jetons'],':id_u'=>$best['id_utilisateur']));
 }
+else{
+  $bestPrime['statut']=4;
+  execRequete('UPDATE   donnes SET statut =:statut WHERE id_utilisateur = :id_u 	AND id_partie = :id_p',
+  array(':statut'=>$bestPrime['statut'],':id_u'=>$bestPrime['id_utilisateur'],':id_p'=>$bestPrime['id_partie']));
+  $resultat = execRequete("SELECT * FROM utilisateurs WHERE id_utilisateur=:id ",
+  array('id' => $bestPrime['id_utilisateur']));
+  $gagnantMoit=$resultat->fetch();
+  $gagnantMoit['jetons']=intval($gagnantMoit['jetons'])+$partie['pot']/2;
+  execRequete('UPDATE   utilisateurs SET jetons =:jetons WHERE id_utilisateur = :id_u',
+  array(':jetons'=>$gagnantMoit['jetons'],':id_u'=>$bestPrime['id_utilisateur']));
+
+
+  $best['statut']=4;
+  execRequete('UPDATE   donnes SET statut =:statut WHERE id_utilisateur = :id_u 	AND id_partie = :id_p',
+  array(':statut'=>$best['statut'],':id_u'=>$best['id_utilisateur'],':id_p'=>$best['id_partie']));
+  $resultat = execRequete("SELECT * FROM utilisateurs WHERE id_utilisateur=:id ",
+  array('id' => $best['id_utilisateur']));
+  $gagnantMoit=$resultat->fetch();
+
+  $gagnantMoit['jetons']=intval($gagnantMoit['jetons'])+$partie['pot']/2;
+  execRequete('UPDATE   utilisateurs SET jetons =:jetons WHERE id_utilisateur = :id_u',
+  array(':jetons'=>$gagnantMoit['jetons'],':id_u'=>$best['id_utilisateur']));
+  }
 }
 
+function annonce($score){
+  switch($score){
+  case 1 : return "une Paire";
+  case 2 : return "une Double Paire";
+  case 3 : return "un Brelan";
+  case 4 : return "une Suite";
+  case 5 : return "une Couleur";
+  case 6 : return "un Full";
+  case 7 : return "un Carré";
+  case 8 : return "une Quinte Flush";
+  default : return "rien du tout";}
+}
 ?>

@@ -4,6 +4,7 @@ body{
 }
 main{
   min-height:calc(100vh - 150px);
+  padding-top: 100px;
 }
 #photo{
   display:none;
@@ -19,6 +20,11 @@ main{
 
   .vert{background-color: green;}
   .gris{background-color: grey;}
+    .gold{background-color: gold;}
   .carte{
-    width: 100px;
-  height: 100%;}
+    width: 100px!important;
+  height: 200px!important;}
+  a{
+    color:black;
+    font-weight: bold;
+  }

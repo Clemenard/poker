@@ -75,7 +75,6 @@
           ?>
         </ul>
         <? if(isset($_SESSION['erreur'])){
-          echo $_SESSION['erreur'];
           if(!empty($_SESSION['erreur'])){
          ?>
         <div class="alert alert-danger"><? echo $_SESSION['erreur']; ?> </div>

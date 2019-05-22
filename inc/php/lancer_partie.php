@@ -1,7 +1,7 @@
 <?
-echo"blabla";
+
 if(isset($_POST['lancementPartie'])  ){
-	echo"blabla";
+
 	$resultat=execRequete('SELECT * FROM parties  WHERE id_partie=:id',array('id'=>$_POST['lancementPartie']));
 $nouvellePartie=$resultat->fetch();
 $resultat=execRequete('SELECT * FROM donnes WHERE id_partie = :partie',array(':partie'=>$_POST['lancementPartie']));
@@ -30,7 +30,7 @@ else if(($nbJoueur==2 && $i==1) || $i==3 ){$donne['mise']=20;}
  if(($nbJoueur==2 && $i==2) || ($nbJoueur==3 && $i==1) || ($nbJoueur>3 && $i==4)){
 	 $donne['statut']=1;
  }
- else{$donne['statut']=2;}
+ 
  execRequete('UPDATE   donnes SET statut =:statut,id_carte1 =:id_carte1,id_carte2 =:id_carte2,mise =:mise,ordre=:ordre WHERE id_utilisateur = :id_u 	AND id_partie = :id_p',
  array(':statut'=>$donne['statut'],':ordre'=>$donne['ordre'],':id_carte1'=>$donne['id_carte1'],':id_carte2'=>$donne['id_carte2'],':mise'=>$donne['mise'],':id_u'=>$donne['id_utilisateur'],':id_p'=>$donne['id_partie']));
  $i++;
